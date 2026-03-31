@@ -15,11 +15,27 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DeutschMeister \u2014 Learn German',
+  title: 'DeutschMeister \u2014 Learn German from A1 to C2',
   description:
-    'Adaptive German language learning from A1 to C2, powered by AI tutoring.',
+    'Master German with AI-powered personalized lessons. Adaptive curriculum from beginner to mastery, covering speaking, listening, reading, and writing.',
   applicationName: 'DeutschMeister',
   keywords: ['German', 'language learning', 'CEFR', 'A1', 'C2', 'Deutsch'],
+  openGraph: {
+    title: 'DeutschMeister \u2014 Learn German from A1 to C2',
+    description:
+      'Master German with AI-powered personalized lessons. Adaptive curriculum from beginner to mastery, covering speaking, listening, reading, and writing.',
+    siteName: 'DeutschMeister',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'DeutschMeister \u2014 Learn German from A1 to C2',
+    description:
+      'Master German with AI-powered personalized lessons. Adaptive curriculum from beginner to mastery, covering speaking, listening, reading, and writing.',
+  },
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export const viewport: Viewport = {

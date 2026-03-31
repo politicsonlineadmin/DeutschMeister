@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { CEFRLevel, WritingFeedback } from '@/types';
 import { checkRateLimit, rateLimitHeaders } from '@/lib/rate-limit';
 import { cefrToNumber } from '@/lib/utils';
+import { getRequiredEnv } from '@/lib/env';
 
 // ─── Constants ────────────────────────────────────────────────
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
@@ -22,12 +23,6 @@ Core principles:
 - Always respond with valid JSON matching the requested schema exactly`;
 
 // ─── Helpers ──────────────────────────────────────────────────
-function getApiKey(): string {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) throw new Error('ANTHROPIC_API_KEY is not configured');
-  return key;
-}
-
 function sanitize(input: string): string {
   return input.replace(/<[^>]*>/g, '').trim().slice(0, 10000);
 }
@@ -125,7 +120,7 @@ ${isBeginner ? `REMINDER: Maximum ${BEGINNER_MAX_ERRORS} items in the errors arr
 
 Return ONLY valid JSON, no additional text.`;
 
-    const apiKey = getApiKey();
+    const apiKey = getRequiredEnv('ANTHROPIC_API_KEY');
 
     const response = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',

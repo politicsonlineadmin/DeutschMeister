@@ -8,6 +8,7 @@ import type {
 } from '@/types';
 import { checkRateLimit, rateLimitHeaders } from '@/lib/rate-limit';
 import { cefrToNumber } from '@/lib/utils';
+import { getRequiredEnv } from '@/lib/env';
 
 // ─── Constants ────────────────────────────────────────────────
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
@@ -35,14 +36,6 @@ Core principles:
 - Always respond with valid JSON matching the requested schema exactly`;
 
 // ─── Helpers ──────────────────────────────────────────────────
-function getApiKey(): string {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) {
-    throw new Error('ANTHROPIC_API_KEY is not configured');
-  }
-  return key;
-}
-
 function sanitizeString(input: string): string {
   return input.replace(/<[^>]*>/g, '').trim().slice(0, 5000);
 }
@@ -54,7 +47,7 @@ function isValidLevel(level: unknown): level is CEFRLevel {
 // Rate limiting is handled via checkRateLimit from '@/lib/rate-limit'
 
 async function callClaude(userPrompt: string): Promise<string> {
-  const apiKey = getApiKey();
+  const apiKey = getRequiredEnv('ANTHROPIC_API_KEY');
 
   const response = await fetch(ANTHROPIC_API_URL, {
     method: 'POST',
