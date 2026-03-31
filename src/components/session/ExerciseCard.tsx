@@ -11,10 +11,47 @@ import type {
 } from '@/types';
 import Button from '@/components/ui/Button';
 import AudioButton from '@/components/ui/AudioButton';
+import { useTTS } from '@/hooks/useSpeech';
+import type { CEFRLevel } from '@/types';
 
 interface ExerciseCardProps {
   exercise: Exercise;
   onAnswer: (answer: string, correct: boolean) => void;
+}
+
+// ─── Mini Audio Button (inline, small) ──────────────────────
+
+function MiniAudioButton({ text, level }: { text: string; level: CEFRLevel }) {
+  const { speak, isSpeaking } = useTTS();
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        speak(text, level);
+      }}
+      className={`inline-flex items-center justify-center w-7 h-7 rounded-full shrink-0 transition-all duration-200 ${
+        isSpeaking
+          ? 'bg-[#e58300] shadow-[0_0_0_3px_rgba(229,131,0,0.2)]'
+          : 'bg-[#e58300]/15 hover:bg-[#e58300]/30'
+      }`}
+      aria-label={`Play: ${text}`}
+    >
+      <svg
+        width="13"
+        height="13"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={isSpeaking ? 'white' : '#e58300'}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      </svg>
+    </button>
+  );
 }
 
 // ─── Shared Constants ───────────────────────────────────────
@@ -267,9 +304,11 @@ function VocabQuiz({
 // ─── Fill in the Blank ───────────────────────────────────────
 
 function FillBlank({
+  exercise,
   content,
   onAnswer,
 }: {
+  exercise: Exercise;
   content: FillBlankContent;
   onAnswer: (answer: string, correct: boolean) => void;
 }) {
@@ -293,7 +332,8 @@ function FillBlank({
     <div>
       {/* Sentence with highlighted blank */}
       <div className="rounded-xl bg-[#f8ffff] border border-[#e7f5f5] px-6 py-5 mb-6">
-        <p className="text-xl sm:text-2xl text-[#3d6b6b] font-mono leading-relaxed">
+        <div className="flex items-start gap-3">
+        <p className="text-xl sm:text-2xl text-[#3d6b6b] font-mono leading-relaxed flex-1">
           {parts[0]}
           <motion.span
             animate={
@@ -322,6 +362,8 @@ function FillBlank({
           </motion.span>
           {parts[1]}
         </p>
+        <AudioButton text={content.sentence.replace('___', content.correct_answer)} level={exercise.level} />
+        </div>
       </div>
 
       {/* Option pills */}
@@ -359,6 +401,7 @@ function FillBlank({
               disabled={answered}
               className={`px-5 py-3 rounded-full border text-[15px] font-semibold transition-all duration-200 cursor-pointer disabled:cursor-default flex items-center gap-2 ${style}`}
             >
+              <MiniAudioButton text={option} level={exercise.level} />
               <span>{option}</span>
               {icon}
             </motion.button>
@@ -381,9 +424,11 @@ function FillBlank({
 // ─── Sentence Build ──────────────────────────────────────────
 
 function SentenceBuild({
+  exercise,
   content,
   onAnswer,
 }: {
+  exercise: Exercise;
   content: SentenceBuildContent;
   onAnswer: (answer: string, correct: boolean) => void;
 }) {
@@ -422,6 +467,12 @@ function SentenceBuild({
 
   return (
     <div>
+      {/* Listen to the correct sentence */}
+      <div className="flex items-center gap-2 mb-4">
+        <AudioButton text={content.correct_order} level={exercise.level} />
+        <span className="text-xs text-[#3d6b6b]/50 font-medium">Listen to the sentence</span>
+      </div>
+
       {/* Sentence building area (drop zone) */}
       <div
         className={`min-h-[72px] mb-5 p-4 rounded-xl border-2 border-dashed flex flex-wrap gap-2.5 items-center transition-all duration-300 ${
@@ -463,8 +514,9 @@ function SentenceBuild({
             whileTap={!answered ? { scale: 0.94 } : {}}
             onClick={() => handleTapWord(word, idx)}
             disabled={answered}
-            className="px-4 py-2 rounded-lg bg-white text-[#3d6b6b] text-sm font-medium border border-gray-200 hover:border-[#e58300]/40 cursor-pointer disabled:cursor-default disabled:opacity-30 transition-all duration-200 shadow-sm hover:shadow"
+            className="px-4 py-2 rounded-lg bg-white text-[#3d6b6b] text-sm font-medium border border-gray-200 hover:border-[#e58300]/40 cursor-pointer disabled:cursor-default disabled:opacity-30 transition-all duration-200 shadow-sm hover:shadow flex items-center gap-1.5"
           >
+            <MiniAudioButton text={word} level={exercise.level} />
             {word}
           </motion.button>
         ))}
@@ -491,9 +543,11 @@ function SentenceBuild({
 // ─── Translation ─────────────────────────────────────────────
 
 function Translation({
+  exercise,
   content,
   onAnswer,
 }: {
+  exercise: Exercise;
   content: TranslationContent;
   onAnswer: (answer: string, correct: boolean) => void;
 }) {
@@ -529,9 +583,14 @@ function Translation({
             </div>
           )}
         </div>
-        <p className="text-xl sm:text-2xl text-[#3d6b6b] font-medium leading-relaxed">
-          {content.source}
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-xl sm:text-2xl text-[#3d6b6b] font-medium leading-relaxed flex-1">
+            {content.source}
+          </p>
+          {content.source_language === 'de' && (
+            <AudioButton text={content.source} level={exercise.level} />
+          )}
+        </div>
       </div>
 
       {/* Translation input */}
@@ -582,12 +641,26 @@ function Translation({
 
       <AnimatePresence>
         {answered && (
-          <FeedbackOverlay
-            correct={isCorrect}
-            correctAnswer={
-              !isCorrect ? content.correct_translation : undefined
-            }
-          />
+          <>
+            <FeedbackOverlay
+              correct={isCorrect}
+              correctAnswer={
+                !isCorrect ? content.correct_translation : undefined
+              }
+            />
+            {/* Show audio for the German translation after answering */}
+            {answered && (
+              <div className="mt-3 flex items-center gap-2">
+                <AudioButton
+                  text={content.source_language === 'de' ? content.source : content.correct_translation}
+                  level={exercise.level}
+                />
+                <span className="text-xs text-[#3d6b6b]/50 font-medium">
+                  Listen to the German
+                </span>
+              </div>
+            )}
+          </>
         )}
       </AnimatePresence>
     </div>
@@ -611,15 +684,15 @@ export default function ExerciseCard({ exercise, onAnswer }: ExerciseCardProps) 
       }
       case 'fill_blank': {
         const content = exercise.content as FillBlankContent;
-        return <FillBlank content={content} onAnswer={onAnswer} />;
+        return <FillBlank exercise={exercise} content={content} onAnswer={onAnswer} />;
       }
       case 'sentence_build': {
         const content = exercise.content as SentenceBuildContent;
-        return <SentenceBuild content={content} onAnswer={onAnswer} />;
+        return <SentenceBuild exercise={exercise} content={content} onAnswer={onAnswer} />;
       }
       case 'translation': {
         const content = exercise.content as TranslationContent;
-        return <Translation content={content} onAnswer={onAnswer} />;
+        return <Translation exercise={exercise} content={content} onAnswer={onAnswer} />;
       }
       default:
         return (

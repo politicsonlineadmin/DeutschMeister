@@ -3,6 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { LearnerProfile, CEFRLevel, SkillBreakdown, SkillType } from '@/types';
 import { CEFR_ORDER } from '@/types';
+import AudioButton from '@/components/ui/AudioButton';
+import { useTTS } from '@/hooks/useSpeech';
 
 // ─── Types ────────────────────────────────────────────────────
 interface AssessmentScreenProps {
@@ -145,6 +147,40 @@ const SECTION_INFO: Record<AssessmentSection, { title: string; icon: string; des
     description: 'Listen to a German sentence and identify what was said.',
   },
 };
+
+// ─── Mini Audio Button (inline, small) ──────────────────────
+function MiniAudioBtn({ text }: { text: string }) {
+  const { speak, isSpeaking } = useTTS();
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        speak(text, 'A1');
+      }}
+      className={`inline-flex items-center justify-center w-7 h-7 rounded-full shrink-0 transition-all duration-200 ${
+        isSpeaking
+          ? 'bg-[#e58300] shadow-[0_0_0_3px_rgba(229,131,0,0.2)]'
+          : 'bg-[#e58300]/15 hover:bg-[#e58300]/30'
+      }`}
+      aria-label={`Play: ${text}`}
+    >
+      <svg
+        width="13"
+        height="13"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={isSpeaking ? 'white' : '#e58300'}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      </svg>
+    </button>
+  );
+}
 
 // ─── Progress Bar ─────────────────────────────────────────────
 function ProgressBar({ value, max }: { value: number; max: number }) {
@@ -408,6 +444,10 @@ export default function AssessmentScreen({ profile, onComplete }: AssessmentScre
       className="px-6 max-w-lg mx-auto animate-fadeIn"
     >
       <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6 shadow-sm">
+        <div className="flex items-start gap-3 mb-3">
+          <AudioButton text={READING_PASSAGE} level="A1" />
+          <span className="text-xs text-[#3d6b6b]/50 font-medium self-center">Listen to passage</span>
+        </div>
         <p className="text-[#3d6b6b]/80 leading-relaxed text-[15px] whitespace-pre-wrap">{READING_PASSAGE}</p>
       </div>
 
@@ -494,16 +534,19 @@ export default function AssessmentScreen({ profile, onComplete }: AssessmentScre
 
         <div key={questionIndex} className="animate-fadeIn">
           <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6 shadow-sm">
-            <p className="text-xl text-[#3d6b6b] font-medium text-center">
-              {q.sentence.split('___').map((part, i, arr) => (
-                <span key={i}>
-                  {part}
-                  {i < arr.length - 1 && (
-                    <span className="inline-block w-20 border-b-2 border-[#e58300]/60 mx-1" />
-                  )}
-                </span>
-              ))}
-            </p>
+            <div className="flex items-center justify-center gap-3">
+              <p className="text-xl text-[#3d6b6b] font-medium text-center">
+                {q.sentence.split('___').map((part, i, arr) => (
+                  <span key={i}>
+                    {part}
+                    {i < arr.length - 1 && (
+                      <span className="inline-block w-20 border-b-2 border-[#e58300]/60 mx-1" />
+                    )}
+                  </span>
+                ))}
+              </p>
+              <MiniAudioBtn text={q.sentence.replace('___', q.correctAnswer)} />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -519,8 +562,9 @@ export default function AssessmentScreen({ profile, onComplete }: AssessmentScre
                     handleFillBlankSelect(opt, q.correctAnswer, GRAMMAR_QUESTIONS.length)
                   }
                   disabled={isAnswerLocked}
-                  className={`px-4 py-3 rounded-2xl border transition-all duration-200 font-medium text-center ${getOptionColorClass(isSelected, isCorrect, showFeedback)} ${isAnswerLocked ? 'cursor-default' : 'cursor-pointer'}`}
+                  className={`px-4 py-3 rounded-2xl border transition-all duration-200 font-medium text-center flex items-center justify-center gap-2 ${getOptionColorClass(isSelected, isCorrect, showFeedback)} ${isAnswerLocked ? 'cursor-default' : 'cursor-pointer'}`}
                 >
+                  <MiniAudioBtn text={opt} />
                   {opt}
                 </button>
               );
@@ -550,7 +594,10 @@ export default function AssessmentScreen({ profile, onComplete }: AssessmentScre
         <div key={questionIndex} className="animate-fadeIn">
           <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6 text-center shadow-sm">
             <p className="text-xs text-[#3d6b6b]/50 uppercase tracking-wider mb-2">Translate to English</p>
-            <p className="text-3xl font-bold text-[#e58300]">{q.german}</p>
+            <div className="flex items-center justify-center gap-3">
+              <p className="text-3xl font-bold text-[#e58300]">{q.german}</p>
+              <MiniAudioBtn text={q.german} />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
