@@ -1,0 +1,148 @@
+export interface InterestDomain {
+  id: string;
+  name: string;
+  icon: string;
+  /** @deprecated Use `icon` instead */
+  emoji: string;
+  description: string;
+  image: string;
+  subdomains: string[];
+}
+
+export const INTEREST_DOMAINS: InterestDomain[] = [
+  {
+    id: 'sports',
+    name: 'Sports',
+    icon: '⚽',
+    emoji: '⚽',
+    description: 'Sports terminology and fitness conversations',
+    image: 'https://images.pexels.com/photos/46798/pexels-photo-46798.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Football', 'Tennis', 'Swimming', 'Basketball', 'Winter Sports', 'Cycling', 'Athletics'],
+  },
+  {
+    id: 'music',
+    name: 'Music',
+    icon: '🎵',
+    emoji: '🎵',
+    description: 'Concerts, instruments, and musical discussions',
+    image: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Classical', 'Pop & Rock', 'Jazz', 'Electronic', 'Instruments', 'Singing', 'Music Theory'],
+  },
+  {
+    id: 'arts',
+    name: 'Arts',
+    icon: '🎨',
+    emoji: '🎨',
+    description: 'Visual arts, performing arts, and creative expression',
+    image: 'https://images.pexels.com/photos/3004909/pexels-photo-3004909.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Painting', 'Sculpture', 'Photography', 'Film', 'Theatre', 'Dance', 'Architecture'],
+  },
+  {
+    id: 'politics',
+    name: 'Politics',
+    icon: '🏛️',
+    emoji: '🏛️',
+    description: 'Current events, governance, and social discussions',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Berlin_reichstag_west_panorama_2.jpg/640px-Berlin_reichstag_west_panorama_2.jpg',
+    subdomains: ['German Politics', 'EU Affairs', 'International Relations', 'Elections', 'Political Theory', 'Current Events'],
+  },
+  {
+    id: 'literature',
+    name: 'Literature',
+    icon: '📚',
+    emoji: '📚',
+    description: 'Books, poetry, and German literary tradition',
+    image: 'https://images.pexels.com/photos/159711/pexels-photo-159711.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['German Classics', 'Modern Fiction', 'Poetry', 'Short Stories', 'Drama', 'Children\'s Literature'],
+  },
+  {
+    id: 'technology',
+    name: 'Technology',
+    icon: '💻',
+    emoji: '💻',
+    description: 'Tech vocabulary, software, and digital life',
+    image: 'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Software', 'Hardware', 'AI & Robotics', 'Social Media', 'Cybersecurity', 'Startups'],
+  },
+  {
+    id: 'cooking',
+    name: 'Cooking',
+    icon: '🍳',
+    emoji: '🍳',
+    description: 'Recipes, dining out, and German cuisine',
+    image: 'https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['German Cuisine', 'Baking', 'International Recipes', 'Vegetarian', 'Kitchen Equipment', 'Restaurants'],
+  },
+  {
+    id: 'travel',
+    name: 'Travel',
+    icon: '✈️',
+    emoji: '✈️',
+    description: 'Navigating airports, hotels, and new cities',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Brandenburg_Gate_Berlin.jpg/640px-Brandenburg_Gate_Berlin.jpg',
+    subdomains: ['German Cities', 'Austria & Switzerland', 'Hotels & Accommodation', 'Transport', 'Sightseeing', 'Nature & Hiking'],
+  },
+  {
+    id: 'business',
+    name: 'Business',
+    icon: '💼',
+    emoji: '💼',
+    description: 'Professional communication and workplace German',
+    image: 'https://images.pexels.com/photos/380769/pexels-photo-380769.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Office Life', 'Meetings', 'Negotiations', 'Finance', 'Marketing', 'Entrepreneurship'],
+  },
+  {
+    id: 'history',
+    name: 'History',
+    icon: '🏰',
+    emoji: '🏰',
+    description: 'German and European history through the ages',
+    image: 'https://images.pexels.com/photos/159711/pexels-photo-159711.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Medieval', 'Modern German History', 'World Wars', 'Cold War & Reunification', 'Cultural History', 'Archaeology'],
+  },
+  {
+    id: 'science',
+    name: 'Science',
+    icon: '🔬',
+    emoji: '🔬',
+    description: 'Scientific vocabulary and academic discussions',
+    image: 'https://images.pexels.com/photos/2280571/pexels-photo-2280571.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Biology', 'Chemistry', 'Physics', 'Medicine', 'Environmental Science', 'Astronomy'],
+  },
+  {
+    id: 'fashion',
+    name: 'Fashion',
+    icon: '👗',
+    emoji: '👗',
+    description: 'Clothing, trends, and shopping vocabulary',
+    image: 'https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Clothing', 'Accessories', 'Designers', 'Trends', 'Sustainable Fashion', 'Shopping'],
+  },
+  {
+    id: 'gaming',
+    name: 'Gaming',
+    icon: '🎮',
+    emoji: '🎮',
+    description: 'Video games, board games, and gaming culture',
+    image: 'https://images.pexels.com/photos/3165335/pexels-photo-3165335.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Video Games', 'Board Games', 'Card Games', 'Esports', 'Game Development', 'Retro Gaming'],
+  },
+  {
+    id: 'fitness',
+    name: 'Fitness',
+    icon: '🏋️',
+    emoji: '🏋️',
+    description: 'Exercise, nutrition, and wellness vocabulary',
+    image: 'https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['Gym & Weightlifting', 'Yoga', 'Running', 'Nutrition', 'Martial Arts', 'Outdoor Activities'],
+  },
+  {
+    id: 'philosophy',
+    name: 'Philosophy',
+    icon: '🤔',
+    emoji: '🤔',
+    description: 'Great thinkers, ethics, and abstract reasoning',
+    image: 'https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=400',
+    subdomains: ['German Philosophers', 'Ethics', 'Logic', 'Existentialism', 'Political Philosophy', 'Aesthetics'],
+  },
+];
